@@ -14,11 +14,12 @@ export class RandomPlanet extends Component {
     error: false,
   };
 
-  constructor() {
-    super();
+  componentDidMount() {
     this.updatePlanet();
     setInterval(this.updatePlanet, 2500);
+    //clearInterval(this.interval);
   }
+
   onError = () => {
     this.setState(
       { error: true, loading: false }
@@ -29,7 +30,6 @@ export class RandomPlanet extends Component {
   };
 
   updatePlanet = () => {
-    console.log('updated');
     const id = Math.floor(Math.random() * 25) + 2
     this.swapiService
       .getPlanet(id)
