@@ -17,6 +17,7 @@ export class RandomPlanet extends Component {
   constructor() {
     super();
     this.updatePlanet();
+    setInterval(this.updatePlanet, 2500);
   }
   onError = () => {
     this.setState(
@@ -27,8 +28,9 @@ export class RandomPlanet extends Component {
     this.setState({ planet, loading: false });
   };
 
-  updatePlanet() {
-    const id = 122222//Math.floor(Math.random() * 25) + 2
+  updatePlanet = () => {
+    console.log('updated');
+    const id = Math.floor(Math.random() * 25) + 2
     this.swapiService
       .getPlanet(id)
       .then(this.onPlanetLoaded).catch(this.onError);
