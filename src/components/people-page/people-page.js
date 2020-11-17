@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { ItemList } from './item-list/item-list';
 import { PersonDetails } from './person-details/person-details';
 import { ErrorIndicator } from '../error-indicator/error-indicator';
-import { ErrorButton } from '../error-button/error-button'
 
 import './people-page.css';
+import { SwapiService } from '../../services/app-service';
 
 export class PeoplePage extends Component {
 
@@ -13,6 +13,8 @@ export class PeoplePage extends Component {
     selectedPerson: 3,
     hasError: false
   };
+
+  swapiService = new SwapiService();
 
   componentDidCatch(error, info) {
 
@@ -34,12 +36,11 @@ export class PeoplePage extends Component {
     return (
       <div className="row mb2">
         <div className="col-md-6">
-          <ItemList onItemSelected={this.onPersonSelected} />
+          <ItemList onItemSelected={this.onPersonSelected} getData={this.swapiService.getAllPeople} />
         </div>
         <div className="col-md-6">
           <PersonDetails personId={this.state.selectedPerson} />
         </div>
-        <ErrorButton />
       </div>
     );
   }
