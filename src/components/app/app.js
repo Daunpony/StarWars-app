@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 
 import { Header } from '../header/header';
 import { RandomPlanet } from '../random-planet/random-planet';
-import { ItemList } from '../people-page/item-list/item-list';
-import { PersonDetails } from '../people-page/person-details/person-details';
-import { SwapiService } from '../../services/app-service'
+import { ErrorBoundry } from '../error-boundry/error-boundry';
+
+import { Row } from "../row/row";
+import { ItemDetails, Record } from "../item-details/item-details";
+import { SwapiService } from "../../services/swapi-service";
+
 import './app.css';
-import { PeoplePage } from '../people-page/people-page';
 
 export class App extends Component {
 
-  state = {
-    showRandomPlanet: true,
-    selectedPerson: 5
-  };
-
   swapiService = new SwapiService();
+
+  state = {
+    showRandomPlanet: true
+  };
 
   toggleRandomPlanet = () => {
     this.setState((state) => {
@@ -25,48 +26,52 @@ export class App extends Component {
     });
   };
 
-  onPersonSelected = (id) => {
-    this.setState({ selectedPerson: id });
-  }
-
   render() {
 
     const planet = this.state.showRandomPlanet ?
       <RandomPlanet /> :
       null;
 
-    return (
-      <div className="stardb-app">
-        <Header />
-        { planet}
+    const { getPerson,
+      getStarship,
+      getPersonImage,
+      getStarshipImage } = this.swapiService;
 
-        <button
-          className="toggle-planet btn btn-warning btn-lg"
-          onClick={this.toggleRandomPlanet}>
-          Toggle Random Planet
-        </button>
-        <div><PeoplePage /></div>
-        {/* <div className="row mb2">
-          <div className="col-md-6">
-            <ItemList onItemSelected={this.onPersonSelected}
-              getData={this.swapiService.getAllPlanets}
-              renderItem={(item) => (<span>{item.name} <button>!</button></span>)} />
-          </div>
-          <div className="col-md-6">
-            <PersonDetails personId={this.state.selectedPerson} />
-          </div>
+    const personDetails = (
+      <ItemDetails
+        itemId={11}
+        getData={getPerson}
+        getImageUrl={getPersonImage} >
+
+        <Record field="gender" label="Gender" />
+        <Record field="eyeColor" label="Eye Color" />
+
+      </ItemDetails>
+    );
+
+    const starshipDetails = (
+      <ItemDetails
+        itemId={5}
+        getData={getStarship}
+        getImageUrl={getStarshipImage}>
+
+        <Record field="model" label="Model" />
+        <Record field="length" label="Length" />
+        <Record field="costInCredits" label="Cost" />
+      </ItemDetails>
+
+    );
+
+    return (
+      <ErrorBoundry>
+        <div className="stardb-app">
+          <Header />
+
+          <Row
+            left={personDetails}
+            right={starshipDetails} />
         </div>
-        <div className="row mb2">
-          <div className="col-md-6">
-            <ItemList onItemSelected={this.onPersonSelected}
-              getData={this.swapiService.getAllStarships}
-              renderItem={(item) => item.name} />
-          </div>
-          <div className="col-md-6">
-            <PersonDetails personId={this.state.selectedPerson} />
-          </div>
-        </div> */}
-      </div>
+      </ErrorBoundry>
     );
   }
 }
